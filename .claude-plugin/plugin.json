@@ -1,6 +1,6 @@
 {
   "name": "ai-pm-skills",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Claude Code skills for AI product managers: evidence-first build decisions, eval plans, agent trust reviews, and launch posts that only claim what's verified.",
   "author": {
     "name": "Vishal Habib",

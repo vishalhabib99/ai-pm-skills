@@ -6,6 +6,7 @@ Claude Code skills for AI product managers, taken from how I actually make produ
 |---|---|
 | [`/build-or-not`](#build-or-not) | Answers "should we build this?" by checking the idea against 4–8 real examples *before* anyone writes a spec or any code. Ends with a decision record: build, don't build, or narrow and re-check. |
 | [`/eval-plan`](#eval-plan) | Turns a PRD into an evaluation plan with pass/fail launch gates set *before* any results exist, built around the one error that actually hurts users. |
+| [`/agent-trust-review`](#agent-trust-review) | Sorts every way an AI agent could fail into covered (with evidence), declined on purpose (with a reason), and genuinely missing, and gives two honest coverage numbers. |
 
 ## Install
 
@@ -28,6 +29,7 @@ Then run:
 ```
 /ai-pm-skills:build-or-not <the feature someone just proposed>
 /ai-pm-skills:eval-plan <path to a PRD, or a description of the AI feature>
+/ai-pm-skills:agent-trust-review <agent description, PRD, or repo path>
 ```
 
 ## `/build-or-not`
@@ -88,9 +90,19 @@ A [practice triage prototype](https://github.com/vishalhabib99/ai-pm-portfolio/t
 
 Run against a harder input, the PRD for a tool that [scores whether an AI agent can be trusted](https://github.com/vishalhabib99/ai-pm-portfolio/blob/main/prds/2026-09-agent-outcome-trust-score.md), so the thing being evaluated is itself an evaluator. The skill noticed that and split the test set in two: tasks for the agent, and human-labeled transcripts to check the scorer against. With only one person labeling, it proposed a blind re-label later instead of claiming a two-labeler agreement rate. Its main gate: **≥95% precision on "success" verdicts**, because a scorer that approves a failed run is the exact problem the tool exists to fix. Full plan in [`examples/`](examples/eval-plan-agent-outcome-trust-score.md).
 
+## `/agent-trust-review`
+
+Most agent risk reviews list what the team did, which makes coverage look complete. This one sorts all 17 risk areas (tools, model behavior, operations, people) into three lists:
+
+- **Covered:** only with evidence someone can check: a test, an eval result, a config line. "We log everything" with nothing to point at is *claimed, not verified*, and counts as missing.
+- **Declined on purpose:** only with a reason and a reopen trigger. "We skipped it" is not a decline.
+- **Genuinely missing:** ranked by how bad it would be, with the smallest next step for the top three.
+
+It ends with two coverage numbers, against what the team chose to own and against the full map, because one number alone misleads. It's based on the [review of my own MCP tools](https://github.com/vishalhabib99/mcp-doctor): 12 areas covered, 9 declined on purpose (each with a reason), 2 genuinely missing, which works out to roughly 80–85% of the chosen niche and 25–30% of AI agent testing overall.
+
 ## Tested, including a failure
 
-Both skills have an [eval suite](evals/) with launch gates committed before the first run, and each is run with and without the plugin to show what it adds. The first run **failed**: with no evidence available, `/build-or-not` still gave a firm verdict from recalled market knowledge. The skill was fixed to make "can't decide yet" its own outcome, and the second run passed every gate.
+All three skills have an [eval suite](evals/) with launch gates committed before the first run, and each is run with and without the plugin to show what it adds. The first run **failed**: with no evidence available, `/build-or-not` still gave a firm verdict from recalled market knowledge. The skill was fixed to make "can't decide yet" its own outcome, and the second run passed every gate.
 
 | | With the skills | Plain Claude |
 |---|---|---|
@@ -98,7 +110,10 @@ Both skills have an [eval suite](evals/) with launch gates committed before the 
 | Refuses a verdict when there's no evidence | 3 of 3 | 0 of 3 |
 | Plans a rollback trigger for launch | 3 of 3 | 1 of 3 |
 
-On two other cases, plain Claude already did as well, and the [results](evals/README.md#results) say so.
+| Separates a reasoned decline from an unexplained gap | 3 of 3 | 2 of 3 |
+| Gives two coverage numbers (owned areas vs. full map) | 3 of 3 | 0 of 3 |
+
+`/agent-trust-review` needed four runs to measure cleanly, and every fix was to my test cases, not the skill. On several other cases plain Claude already did as well. The [results](evals/README.md#results) cover all of it.
 
 ## Where `/build-or-not` comes from
 
@@ -112,7 +127,6 @@ I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](ht
 
 Planned next, each based on something I've already done by hand:
 
-- `/agent-trust-review`: map an AI agent's risks into "covered", "declined on purpose" and "genuinely missing".
 - `/honest-launch`: a launch post that only claims what's been verified.
 
 ## License

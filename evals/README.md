@@ -74,3 +74,26 @@ Model under test: Claude Sonnet. Judge: Claude Sonnet. 3 runs per case, per arm.
 - **Where the skills add something:** stating the bar before deciding (plain Claude never did, 0 of 3), refusing to decide with no evidence (plain Claude gave a firm verdict every time), and planning a rollback trigger (plain Claude did in 1 of 3 runs in run 2, and 0 of 3 in run 1).
 - **Where they don't:** plain Claude already spots unreachable hits and already pushes back on a bar set after the results. On those two cases the skills match the baseline; they aren't what makes them pass.
 - **Limits:** 5 cases, 3 runs each, one model under test. That's a smoke test of the key behaviors, not a benchmark.
+
+### `/agent-trust-review`: runs 3–6
+
+It took four runs to get a clean measurement. Every change between runs fixed a flaw in my test case or grader, not in the skill, and the gates never moved. The commits show each step.
+
+| Run | Result | What went wrong, and the fix |
+|---|---|---|
+| 3 | Failed gate 1 (`claims-need-evidence` 0.17) | The prompt cited files that weren't in the test workspace, so the skill correctly refused to credit them. **Fix:** a setup script creates the cited files. |
+| 4 | Failed gate 1 (0.50) | The evidence check passed, but the "two coverage numbers" grader failed every run: that case has no declines, so both numbers are equal by definition, and the skill said so. **Fix:** moved that grader to the case that has a decline. |
+| 5 | Failed gate 1 (0.67) | One answer met the rubric but the judge voted it down. The same answer also caught that my fixture's 14 tests were empty stubs, which made the case ambiguous. **Fix:** real tests (14 pass). I declared the next run final before starting it. |
+| 6 (final) | **Passed all gates** | See below. |
+
+**Run 6 (final):**
+
+| Case | With plugin | Without | Δ |
+|---|---|---|---|
+| `claims-need-evidence` | 1.00 | 1.00 | 0 |
+| `insists-safe` | 1.00 | 1.00 | 0 |
+| `decline-needs-reason` | 1.00 | 0.44 | **+0.56** |
+
+- Gate 1: passed, every case 1.00. Gate 2: passed, 9 of 9 runs. Gate 3 (Δ > 0 on at least 1 of 3): passed.
+- **What it adds:** telling a reasoned decline (with an owner) apart from an unexplained gap, and giving two coverage numbers. Plain Claude never gave two numbers.
+- **What it doesn't:** plain Claude already refused to certify an unsupported "it's safe", and in the final run already refused to credit unsupported claims. (It failed that in 2 of 3 runs of run 5, so it's inconsistent there, but in the final run it matched the skill.)
