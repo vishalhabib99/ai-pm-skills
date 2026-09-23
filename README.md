@@ -2,7 +2,10 @@
 
 Claude Code skills for AI product managers, taken from how I actually make product decisions when building AI tools.
 
-The first skill, **`/build-or-not`**, answers "should we build this?" by checking the idea against 4–8 real examples *before* anyone writes a spec or any code. It ends with a short decision record: build, don't build, or narrow and re-check.
+| Skill | What it does |
+|---|---|
+| [`/build-or-not`](#build-or-not) | Answers "should we build this?" by checking the idea against 4–8 real examples *before* anyone writes a spec or any code. Ends with a decision record: build, don't build, or narrow and re-check. |
+| [`/eval-plan`](#eval-plan) | Turns a PRD into an evaluation plan with pass/fail launch gates set *before* any results exist, built around the one error that actually hurts users. |
 
 ## Install
 
@@ -24,6 +27,7 @@ Then run:
 
 ```
 /ai-pm-skills:build-or-not <the feature someone just proposed>
+/ai-pm-skills:eval-plan <path to a PRD, or a description of the AI feature>
 ```
 
 ## `/build-or-not`
@@ -63,6 +67,27 @@ Prompt: *"Add a check to [mcp-doctor](https://github.com/vishalhabib99/mcp-docto
 
 That last line is the part I care about most: the skill doesn't only say no, it points to where the real question is.
 
+## `/eval-plan`
+
+An eval only protects you if it can fail. Most AI eval plans can't: the test set only has the easy cases, the bar gets set after the numbers come in, or one accuracy number hides the error that actually hurts users.
+
+The skill:
+
+1. **Names the worst error** and which way the costs lean (a confident wrong answer vs. a missed case), before picking any metric.
+2. **Lists what the feature must do and what it must refuse to do.** The second list is where most AI features fail.
+3. **Designs the test set up front**, with deliberate negatives (inputs that should match nothing) and known hard cases, not just the happy path.
+4. **Sets pass/fail launch gates now**, each tied to the cost of being wrong, plus a guardrail metric that must not get worse.
+5. **Runs the cheapest baseline first**, which tests the eval as much as the model.
+6. **Decides the post-launch sampling and the rollback trigger** before launch.
+
+### What it's based on
+
+A [practice triage prototype](https://github.com/vishalhabib99/ai-pm-portfolio/tree/main/prototypes/ticket-triage-rag) set its bar in the PRD before any code: ≥95% precision on confident predictions, because a confident wrong reply is the costly error. The test set included two off-topic tickets on purpose. The cheap baseline scored **60% and failed the gate**: both off-topic tickets were confidently matched to `billing`. The first three sample tickets had all looked fine by eye. Only the deliberate negatives caught it.
+
+### Example run
+
+Run against a harder input, the PRD for a tool that [scores whether an AI agent can be trusted](https://github.com/vishalhabib99/ai-pm-portfolio/blob/main/prds/2026-09-agent-outcome-trust-score.md), so the thing being evaluated is itself an evaluator. The skill noticed that and split the test set in two: tasks for the agent, and human-labeled transcripts to check the scorer against. With only one person labeling, it proposed a blind re-label later instead of claiming a two-labeler agreement rate. Its main gate: **≥95% precision on "success" verdicts**, because a scorer that approves a failed run is the exact problem the tool exists to fix. Full plan in [`examples/`](examples/eval-plan-agent-outcome-trust-score.md).
+
 ## Where this comes from
 
 I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](https://github.com/vishalhabib99/mcp-fuzz) and [mcp-reality-check](https://github.com/vishalhabib99/mcp-reality-check), open-source trust and quality tools for MCP servers. Several of their biggest product decisions were made this way, and the skill includes them as worked examples:
@@ -73,9 +98,8 @@ I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](ht
 
 ## Roadmap
 
-`/build-or-not` is the first skill. Planned next, each based on something I've already done by hand:
+Planned next, each based on something I've already done by hand:
 
-- `/eval-plan`: turn a PRD into pass/fail evals with fixed thresholds.
 - `/agent-trust-review`: map an AI agent's risks into "covered", "declined on purpose" and "genuinely missing".
 - `/honest-launch`: a launch post that only claims what's been verified.
 
