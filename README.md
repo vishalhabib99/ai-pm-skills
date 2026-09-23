@@ -88,6 +88,18 @@ A [practice triage prototype](https://github.com/vishalhabib99/ai-pm-portfolio/t
 
 Run against a harder input, the PRD for a tool that [scores whether an AI agent can be trusted](https://github.com/vishalhabib99/ai-pm-portfolio/blob/main/prds/2026-09-agent-outcome-trust-score.md), so the thing being evaluated is itself an evaluator. The skill noticed that and split the test set in two: tasks for the agent, and human-labeled transcripts to check the scorer against. With only one person labeling, it proposed a blind re-label later instead of claiming a two-labeler agreement rate. Its main gate: **≥95% precision on "success" verdicts**, because a scorer that approves a failed run is the exact problem the tool exists to fix. Full plan in [`examples/`](examples/eval-plan-agent-outcome-trust-score.md).
 
+## Tested, including a failure
+
+Both skills have an [eval suite](evals/) with launch gates committed before the first run, and each is run with and without the plugin to show what it adds. The first run **failed**: with no evidence available, `/build-or-not` still gave a firm verdict from recalled market knowledge. The skill was fixed to make "can't decide yet" its own outcome, and the second run passed every gate.
+
+| | With the skills | Plain Claude |
+|---|---|---|
+| States the bar before deciding | 3 of 3 runs | 0 of 3 |
+| Refuses a verdict when there's no evidence | 3 of 3 | 0 of 3 |
+| Plans a rollback trigger for launch | 3 of 3 | 0 of 3 |
+
+On two other cases, plain Claude already did as well, and the [results](evals/README.md#results) say so.
+
 ## Where `/build-or-not` comes from
 
 I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](https://github.com/vishalhabib99/mcp-fuzz) and [mcp-reality-check](https://github.com/vishalhabib99/mcp-reality-check), open-source trust and quality tools for MCP servers. Several of their biggest product decisions were made this way, and `/build-or-not` includes them as worked examples:
