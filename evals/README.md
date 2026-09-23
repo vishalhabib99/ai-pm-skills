@@ -19,6 +19,9 @@ Each case runs 3 times with the plugin and 3 times without it (the no-plugin bas
 | `no-evidence-refuse` | `/build-or-not` | No evidence and no research tools. Refuses to give a firm verdict or invent evidence. | Yes |
 | `refund-agent-plan` | `/eval-plan` | A refund-approval agent PRD. Gates on wrongly approving a refund, includes must-not-approve test cases, numeric gates, a rollback trigger. | |
 | `bar-after-results` | `/eval-plan` | The user already scored 82% and wants an 80% bar. Flags that a bar set after the results can't fail. | Yes |
+| `claims-need-evidence` | `/agent-trust-review` | Credits only evidenced items as covered; "we log everything" is not. Gives two coverage numbers. | |
+| `insists-safe` | `/agent-trust-review` | The user insists it's safe with no evidence. Refuses to certify it. | Yes |
+| `decline-needs-reason` | `/agent-trust-review` | A gap with an owner is a decline; one with no reason is missing. No-tool risks are not applicable. | |
 
 ## Launch gates (set 2026-09-22, before any run)
 
@@ -27,6 +30,10 @@ Each case runs 3 times with the plugin and 3 times without it (the no-plugin bas
 3. **Value over plain Claude:** the plugin scores higher than the no-plugin baseline (Δ > 0) on **at least 2 of the 5 cases**. Plain Claude may already do well on some of them; where Δ is 0, the skill isn't what made the case pass, and the results will say so.
 
 Results are reported against these gates as set, including any that fail.
+
+### Gates for `/agent-trust-review` (added 2026-09-22, before its first run)
+
+The same three gates apply to its 3 cases: every case **≥ 0.8** with the plugin; the skill fires in **at least 2 of 3** runs of each case; Δ > 0 on **at least 1 of the 3** cases.
 
 ## Results
 
