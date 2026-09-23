@@ -96,7 +96,7 @@ Both skills have an [eval suite](evals/) with launch gates committed before the 
 |---|---|---|
 | States the bar before deciding | 3 of 3 runs | 0 of 3 |
 | Refuses a verdict when there's no evidence | 3 of 3 | 0 of 3 |
-| Plans a rollback trigger for launch | 3 of 3 | 0 of 3 |
+| Plans a rollback trigger for launch | 3 of 3 | 1 of 3 |
 
 On two other cases, plain Claude already did as well, and the [results](evals/README.md#results) say so.
 

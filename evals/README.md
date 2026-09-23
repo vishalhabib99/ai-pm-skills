@@ -64,6 +64,6 @@ Model under test: Claude Sonnet. Judge: Claude Sonnet. 3 runs per case, per arm.
 
 ### What the numbers say, plainly
 
-- **Where the skills add something:** stating the bar before deciding (plain Claude never did, 0 of 3), refusing to decide with no evidence (plain Claude gave a firm verdict every time), and planning a rollback trigger (plain Claude never did).
+- **Where the skills add something:** stating the bar before deciding (plain Claude never did, 0 of 3), refusing to decide with no evidence (plain Claude gave a firm verdict every time), and planning a rollback trigger (plain Claude did in 1 of 3 runs in run 2, and 0 of 3 in run 1).
 - **Where they don't:** plain Claude already spots unreachable hits and already pushes back on a bar set after the results. On those two cases the skills match the baseline; they aren't what makes them pass.
 - **Limits:** 5 cases, 3 runs each, one model under test. That's a smoke test of the key behaviors, not a benchmark.
