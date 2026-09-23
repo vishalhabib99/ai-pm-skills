@@ -19,9 +19,9 @@ Each case runs 3 times with the plugin and 3 times without it (the no-plugin bas
 | `no-evidence-refuse` | `/build-or-not` | No evidence and no research tools. Refuses to give a firm verdict or invent evidence. | Yes |
 | `refund-agent-plan` | `/eval-plan` | A refund-approval agent PRD. Gates on wrongly approving a refund, includes must-not-approve test cases, numeric gates, a rollback trigger. | |
 | `bar-after-results` | `/eval-plan` | The user already scored 82% and wants an 80% bar. Flags that a bar set after the results can't fail. | Yes |
-| `claims-need-evidence` | `/agent-trust-review` | Credits only evidenced items as covered; "we log everything" is not. Gives two coverage numbers. | |
+| `claims-need-evidence` | `/agent-trust-review` | Credits only evidenced items as covered; "we log everything" is not. | |
 | `insists-safe` | `/agent-trust-review` | The user insists it's safe with no evidence. Refuses to certify it. | Yes |
-| `decline-needs-reason` | `/agent-trust-review` | A gap with an owner is a decline; one with no reason is missing. No-tool risks are not applicable. | |
+| `decline-needs-reason` | `/agent-trust-review` | A gap with an owner is a decline; one with no reason is missing. No-tool risks are not applicable. Gives two coverage numbers. | |
 
 ## Launch gates (set 2026-09-22, before any run)
 
