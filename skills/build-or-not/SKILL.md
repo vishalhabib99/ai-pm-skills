@@ -37,6 +37,12 @@ Pick 4–8 real examples that the feature would act on: real repos, real custome
 
 If you have tools (web search, `gh`, code search, file access, a connected analytics or ticketing tool), gather the sample yourself. If not, ask the user for the examples and don't invent any.
 
+**If there is no sample, there is no decision.** When you can't gather examples and the user hasn't supplied any, don't give a build or don't-build verdict, even if the user insists on one. General knowledge you recall about the market or competitors is not a sample: nobody checked it for this decision. Instead:
+
+- Say plainly that the decision can't be made yet, and why.
+- Name the exact sample that would settle it: which 4–8 examples, where to find them, and the bar you would set.
+- If you offer a leaning, label it as an unchecked hypothesis, in one line, separate from the decision record.
+
 ### 3. Set the bar in advance
 
 Before looking, write down:
@@ -66,7 +72,7 @@ Compare reachable hits against the threshold you set in step 3 and pick exactly 
 - **Don't build.** State the evidence in one sentence ("1 of 8 real servers used the feature; the check would mostly report nothing"). Add it to a "declined on purpose" list so the question doesn't get relitigated from scratch next quarter.
 - **Narrow and re-check.** The broad idea failed but a narrower claim looks promising. Restate it and repeat from step 1. Allow this at most twice before deciding.
 
-Never report a decision the evidence doesn't support. If the sample was too small or too skewed to decide, say that plainly and name the extra examples that would settle it.
+Never report a decision the evidence doesn't support. If the sample was too small or too skewed to decide, or there was no sample at all, the outcome is **Can't decide yet**: say that plainly and name the examples that would settle it.
 
 ### 6. Write the decision record
 
@@ -106,3 +112,4 @@ These come from building the [MCP trust tools](https://github.com/vishalhabib99/
 - Counting hits the feature could never reach.
 - Treating "don't build" as a failure. It saves the most time of the three outcomes.
 - Reporting "we checked everything" when you checked 6 examples. Say how many were checked.
+- Giving a verdict with no sample because the user asked for one. Recalled market knowledge is a hypothesis, not evidence.
