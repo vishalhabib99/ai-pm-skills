@@ -1,0 +1,17 @@
+{
+  "name": "ai-pm-skills",
+  "description": "Claude Code skills for AI product managers.",
+  "owner": {
+    "name": "Vishal Habib",
+    "url": "https://github.com/vishalhabib99"
+  },
+  "plugins": [
+    {
+      "name": "ai-pm-skills",
+      "description": "Evidence-first build decisions, eval plans, agent trust reviews, and honest launch posts for AI product managers.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/vishalhabib99/ai-pm-skills"
+    }
+  ]
+}
