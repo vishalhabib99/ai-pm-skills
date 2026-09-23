@@ -88,9 +88,9 @@ A [practice triage prototype](https://github.com/vishalhabib99/ai-pm-portfolio/t
 
 Run against a harder input, the PRD for a tool that [scores whether an AI agent can be trusted](https://github.com/vishalhabib99/ai-pm-portfolio/blob/main/prds/2026-09-agent-outcome-trust-score.md), so the thing being evaluated is itself an evaluator. The skill noticed that and split the test set in two: tasks for the agent, and human-labeled transcripts to check the scorer against. With only one person labeling, it proposed a blind re-label later instead of claiming a two-labeler agreement rate. Its main gate: **≥95% precision on "success" verdicts**, because a scorer that approves a failed run is the exact problem the tool exists to fix. Full plan in [`examples/`](examples/eval-plan-agent-outcome-trust-score.md).
 
-## Where this comes from
+## Where `/build-or-not` comes from
 
-I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](https://github.com/vishalhabib99/mcp-fuzz) and [mcp-reality-check](https://github.com/vishalhabib99/mcp-reality-check), open-source trust and quality tools for MCP servers. Several of their biggest product decisions were made this way, and the skill includes them as worked examples:
+I built [mcp-doctor](https://github.com/vishalhabib99/mcp-doctor), [mcp-fuzz](https://github.com/vishalhabib99/mcp-fuzz) and [mcp-reality-check](https://github.com/vishalhabib99/mcp-reality-check), open-source trust and quality tools for MCP servers. Several of their biggest product decisions were made this way, and `/build-or-not` includes them as worked examples:
 
 - **Declined:** an audit of MCP resources and prompts. Only 1 of 8 real servers used them.
 - **Narrowed, then declined:** a governance/compliance check. Narrowed to "financial or personal identifiers logged unredacted", it found 1 real hit in 4 servers, but in a sync script no agent tool call could reach.
