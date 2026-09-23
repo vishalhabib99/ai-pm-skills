@@ -2,6 +2,10 @@
 
 Claude Code skills for AI product managers, taken from how I actually make product decisions when building AI tools.
 
+![/build-or-not deciding not to build a feature after checking 6 real repos](docs/demo.gif)
+
+<sub>Replay of a real `/build-or-not` run, trimmed. Full output: [examples/snake-case-tool-names.md](examples/snake-case-tool-names.md). Regenerate with `python3 docs/make_demo_gif.py`.</sub>
+
 | Skill | What it does |
 |---|---|
 | [`/build-or-not`](#build-or-not) | Answers "should we build this?" by checking the idea against 4–8 real examples *before* anyone writes a spec or any code. Ends with a decision record: build, don't build, or narrow and re-check. |
