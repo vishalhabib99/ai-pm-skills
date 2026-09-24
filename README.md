@@ -2,6 +2,8 @@
 
 Claude Code skills for AI product managers, taken from how I actually make product decisions when building AI tools.
 
+**[See real runs without installing anything →](https://vishalhabib99.github.io/ai-pm-skills/)**
+
 ![/build-or-not deciding not to build a feature after checking 6 real repos](docs/demo.gif)
 
 <sub>Replay of a real `/build-or-not` run, trimmed. Full output: [examples/snake-case-tool-names.md](examples/snake-case-tool-names.md). Regenerate with `python3 docs/make_demo_gif.py`.</sub>

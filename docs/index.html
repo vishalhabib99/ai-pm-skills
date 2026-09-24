@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-pm-skills</title>
+<meta name="description" content="Claude Code skills for AI product managers. See real runs of /build-or-not, /eval-plan and /agent-trust-review, including the eval that failed, before you install anything.">
+<meta property="og:title" content="ai-pm-skills: see it work before you install">
+<meta property="og:description" content="Real runs of three Claude Code skills for AI PMs, including the failure that changed one of them.">
+<meta property="og:image" content="https://vishalhabib99.github.io/ai-pm-skills/social-preview.png">
+<meta property="og:url" content="https://vishalhabib99.github.io/ai-pm-skills/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfaf7; --surface:#ffffff; --surface-2:#f3f1ec; --text:#1c1b19; --muted:#5f5b53;
+  --border:#e4e0d8; --accent:#2f5d50; --accent-soft:#e3eee9;
+  --hit:#9a3b1e; --hit-soft:#f7e6df; --miss:#3d5a80; --miss-soft:#e4ebf4;
+  --pass:#2f6b3f; --pass-soft:#e2f0e5; --fail:#a1321f; --fail-soft:#f8e3de;
+  --code-bg:#1f2421; --code-text:#e8ece9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141614; --surface:#1b1e1c; --surface-2:#232725; --text:#ecebe7; --muted:#a6a39b;
+    --border:#313532; --accent:#8cc3ae; --accent-soft:#223630;
+    --hit:#f0a58a; --hit-soft:#3a2520; --miss:#9fbbe0; --miss-soft:#1f2a38;
+    --pass:#8fd19e; --pass-soft:#1d3323; --fail:#f29b88; --fail-soft:#3a211c;
+    --code-bg:#0e100f; --code-text:#e8ece9;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141614; --surface:#1b1e1c; --surface-2:#232725; --text:#ecebe7; --muted:#a6a39b;
+  --border:#313532; --accent:#8cc3ae; --accent-soft:#223630;
+  --hit:#f0a58a; --hit-soft:#3a2520; --miss:#9fbbe0; --miss-soft:#1f2a38;
+  --pass:#8fd19e; --pass-soft:#1d3323; --fail:#f29b88; --fail-soft:#3a211c;
+  --code-bg:#0e100f; --code-text:#e8ece9;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--accent);text-underline-offset:3px}
+code,pre{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+code{font-size:.88em;background:var(--surface-2);padding:.1em .35em;border-radius:4px}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--border)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px}
+.brand{font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--text)}
+nav.jump{display:flex;gap:16px;flex-wrap:wrap;font-size:.9rem}
+nav.jump a{color:var(--muted);text-decoration:none}
+nav.jump a:hover{color:var(--accent)}
+.hero{padding:56px 0 24px}
+.eyebrow{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px}
+.lede{font-size:1.15rem;color:var(--muted);max-width:640px;margin:0 0 24px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:10px 16px;border-radius:8px;font-weight:600;font-size:.95rem;text-decoration:none;border:1px solid var(--border);color:var(--text);background:var(--surface)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:36px 0 8px}
+.skill-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;color:var(--text)}
+.skill-card:hover{border-color:var(--accent)}
+.skill-card code{background:none;padding:0;font-weight:500;color:var(--accent);font-size:.95rem}
+.skill-card p{margin:6px 0 0;font-size:.92rem;color:var(--muted)}
+section{padding:48px 0 8px}
+h2{font-size:1.6rem;letter-spacing:-.015em;margin:0 0 8px;line-height:1.25}
+h2 code{font-size:.85em;background:none;padding:0;color:var(--accent)}
+h3{font-size:1.05rem;margin:28px 0 8px}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+.prompt{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:.95rem}
+.prompt b{display:block;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+dl.record{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:0;font-size:.95rem}
+dl.record dt{font-weight:600}
+dl.record dd{margin:0;color:var(--text)}
+.tbl{width:100%;overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-size:.78rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tag.miss{background:var(--miss-soft);color:var(--miss)}
+.tag.pass{background:var(--pass-soft);color:var(--pass)}
+.tag.fail{background:var(--fail-soft);color:var(--fail)}
+.decision{display:flex;gap:14px;align-items:flex-start;background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:16px 0}
+.decision .big{font-size:1.3rem;font-weight:700;white-space:nowrap}
+.decision p{margin:0}
+.callout{border:1px dashed var(--border);border-radius:10px;padding:14px 16px;color:var(--muted);font-size:.93rem;margin:16px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.stat .n{font-size:1.6rem;font-weight:700;letter-spacing:-.02em}
+.stat .l{font-size:.85rem;color:var(--muted)}
+figure{margin:24px 0}
+figure img{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);display:block}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:8px}
+pre{background:var(--code-bg);color:var(--code-text);padding:16px;border-radius:10px;overflow-x:auto;font-size:.85rem;line-height:1.55}
+ul.tight{padding-left:20px;margin:8px 0}
+ul.tight li{margin:4px 0}
+footer{border-top:1px solid var(--border);margin-top:56px;padding:24px 0 40px;color:var(--muted);font-size:.9rem}
+.src{font-size:.88rem;margin-top:12px}
+@media (max-width:560px){
+  nav.jump{display:none}
+  dl.record{grid-template-columns:1fr;gap:2px}
+  dl.record dd{margin-bottom:10px}
+  .decision{flex-direction:column;gap:4px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">ai-pm-skills</a>
+    <nav class="jump" aria-label="Sections">
+      <a href="#build-or-not">/build-or-not</a>
+      <a href="#eval-plan">/eval-plan</a>
+      <a href="#agent-trust-review">/agent-trust-review</a>
+      <a href="#tested">Tested</a>
+      <a href="#install">Install</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <p class="eyebrow">Claude Code skills for AI product managers</p>
+    <h1>See the skills work before you install anything.</h1>
+    <p class="lede">Three skills built from how I make AI product decisions. Everything below comes from real runs, including the eval that failed and changed one of the skills.</p>
+    <div class="cta">
+      <a class="btn primary" href="#build-or-not">See a real run</a>
+      <a class="btn" href="https://github.com/vishalhabib99/ai-pm-skills">Source on GitHub</a>
+    </div>
+    <div class="skills">
+      <a class="skill-card" href="#build-or-not"><code>/build-or-not</code><p>Checks "should we build this?" against 4–8 real examples before anyone writes a spec.</p></a>
+      <a class="skill-card" href="#eval-plan"><code>/eval-plan</code><p>Turns a PRD into pass/fail launch gates set before any results exist.</p></a>
+      <a class="skill-card" href="#agent-trust-review"><code>/agent-trust-review</code><p>Sorts agent risks into covered, declined on purpose, and genuinely missing.</p></a>
+    </div>
+  </div>
+
+  <section id="build-or-not">
+    <h2><code>/build-or-not</code>: it said don't build</h2>
+    <p class="sub">Most bad builds aren't badly executed. They solve a problem that turns out to be rare, and a handful of real cases can usually show that in an hour.</p>
+
+    <div class="prompt"><b>Prompt</b>"Add a check to mcp-doctor that flags MCP servers whose tool names aren't snake_case. Keep the sample to 6 repos from GitHub (use gh search), and keep the answer to the decision record only."</div>
+
+    <figure>
+      <img src="demo.gif" width="900" height="560" alt="Terminal replay of the /build-or-not run checking six MCP server repos for non-snake_case tool names">
+      <figcaption>Trimmed replay of the run. Claude Sonnet, 2026-09-22.</figcaption>
+    </figure>
+
+    <div class="card">
+      <dl class="record">
+        <dt>Claim checked</dt><dd>Real, actively used MCP servers define at least one tool name that isn't snake_case.</dd>
+        <dt>Sample</dt><dd>6 single-purpose MCP server repos from the <code>mcp</code> GitHub topic, in descending star order. <code>googleapis/mcp-toolbox</code> was scored N/A (its tool names come from user config) and replaced.</dd>
+        <dt>Bar, set first</dt><dd>Hit = at least one non-snake_case tool name. Build if 3 or more of 6.</dd>
+      </dl>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>#</th><th>Repo</th><th>Result</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>DeusData/codebase-memory-mcp (C)</td><td><span class="tag miss">Miss</span></td><td><code>src/mcp/mcp.c:466</code>: <code>index_repository</code>, <code>search_graph</code>, …</td></tr>
+            <tr><td>2</td><td>microsoft/playwright-mcp (TS)</td><td><span class="tag miss">Miss</span></td><td>README tool list, ~70 tools: <code>browser_click</code>, …</td></tr>
+            <tr><td>3</td><td>github/github-mcp-server (Go)</td><td><span class="tag miss">Miss</span></td><td><code>get_issue</code>, <code>create_pull_request</code>, …</td></tr>
+            <tr><td>4</td><td>idosal/git-mcp (TS)</td><td><span class="tag miss">Miss</span></td><td>Tool-name generators replace non-alphanumerics with <code>_</code></td></tr>
+            <tr><td>5</td><td>GLips/Figma-Context-MCP (TS)</td><td><span class="tag miss">Miss</span></td><td><code>get_figma_data</code>, <code>download_figma_images</code></td></tr>
+            <tr><td>6</td><td>wonderwhy-er/DesktopCommanderMCP (TS)</td><td><span class="tag miss">Miss</span></td><td><code>src/server.ts</code>, 24 tools: <code>read_file</code>, <code>edit_block</code>, …</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="decision"><span class="big">0 / 6 → Don't build</span><p>The check would report "clean" on almost every real server, across C, TypeScript and Go.</p></div>
+      <dl class="record">
+        <dt>What would reopen it</dt><dd>Evidence that config-driven servers commonly produce non-snake_case names. mcp-toolbox's own README example is <code>search-hotels-by-name</code>, so the real risk may sit in user config, which this sample didn't test.</dd>
+      </dl>
+    </div>
+    <p>That last line is the part that matters most. The skill doesn't just say no. It says where the real question is.</p>
+    <p class="src"><a href="https://github.com/vishalhabib99/ai-pm-skills/blob/main/examples/snake-case-tool-names.md">Full, untrimmed decision record →</a></p>
+  </section>
+
+  <section id="eval-plan">
+    <h2><code>/eval-plan</code>: gates before results</h2>
+    <p class="sub">An eval only protects you if it can fail. Most can't: the test set has only easy cases, the bar gets set after the numbers come in, or one accuracy number hides the error that hurts users.</p>
+
+    <div class="prompt"><b>Input</b>The PRD for <a href="https://github.com/vishalhabib99/ai-pm-portfolio/blob/main/prds/2026-09-agent-outcome-trust-score.md">Agent Outcome Trust Score</a>, a tool that scores whether an AI agent can be trusted. The thing being evaluated is itself an evaluator.</div>
+
+    <div class="card">
+      <dl class="record">
+        <dt>Worst error</dt><dd>The scorer marks a transcript "pass" that a human reviewer would call a failure. That is the exact problem the tool exists to fix, so costs lean toward <strong>precision on "pass" verdicts</strong>, not overall accuracy.</dd>
+        <dt>Test set</dt><dd>Two tiers: tasks for the agent, and human-labeled transcripts to check the scorer against. With one labeler, it proposed a blind re-label after a cooling-off period instead of claiming a two-labeler agreement rate.</dd>
+      </dl>
+      <h3>Launch gates, set before any results</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Behavior</th><th>Gate</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Task success scoring</td><td class="num">≥95% precision</td><td>A false "success" is the failure this tool exists to catch</td></tr>
+            <tr><td>Graceful escalation</td><td class="num">≥95%</td><td>"Handed off honestly" must never score the same as "answered wrong"</td></tr>
+            <tr><td>Auditability</td><td class="num">≥90%</td><td>A non-engineer can reconstruct the score from the transcript alone</td></tr>
+            <tr><td>Consistency</td><td class="num">≥95% stable</td><td>Otherwise the scorecard itself is the noisy variable</td></tr>
+            <tr><td>Cost per task</td><td class="num">0% drift</td><td>Mechanical, so no reason to tolerate any</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <dl class="record">
+        <dt>Cheapest baseline</dt><dd>Rule-based scoring first. If it fails, how it fails tells you what an LLM judge has to catch.</dd>
+        <dt>If it fails</dt><dd>Report it as a finding about the method. Don't loosen the threshold.</dd>
+      </dl>
+    </div>
+
+    <h3>Where the method comes from</h3>
+    <p>A <a href="https://github.com/vishalhabib99/ai-pm-portfolio/tree/main/prototypes/ticket-triage-rag">practice triage prototype</a> set its bar in the PRD before any code, and included two off-topic tickets on purpose. The cheap baseline scored <strong>60% and failed the gate</strong>. Both off-topic tickets were confidently matched to <code>billing</code>. The first three tickets had all looked fine by eye. Only the deliberate negatives caught it.</p>
+    <p class="src"><a href="https://github.com/vishalhabib99/ai-pm-skills/blob/main/examples/eval-plan-agent-outcome-trust-score.md">Full eval plan →</a></p>
+  </section>
+
+  <section id="agent-trust-review">
+    <h2><code>/agent-trust-review</code>: three honest lists</h2>
+    <p class="sub">Most agent risk reviews list what the team did, which makes coverage look complete. This one sorts all 17 risk areas into three lists and ends with two coverage numbers.</p>
+    <ul class="tight">
+      <li><strong>Covered</strong>: only with evidence someone can check. "We log everything" with nothing to point at is claimed, not verified.</li>
+      <li><strong>Declined on purpose</strong>: only with a reason and a trigger to reopen it.</li>
+      <li><strong>Genuinely missing</strong>: ranked by severity, with the smallest next step for the top three.</li>
+    </ul>
+
+    <h3>The review it's based on: my own MCP tools</h3>
+    <div class="stats">
+      <div class="stat"><div class="n">12</div><div class="l">areas covered, with evidence</div></div>
+      <div class="stat"><div class="n">9</div><div class="l">declined on purpose, each with a reason</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">genuinely missing</div></div>
+    </div>
+    <p>That comes to roughly 80–85% of the niche the tools chose to own, and 25–30% of AI agent testing overall. Both numbers are true, and giving only one would mislead.</p>
+
+    <h3>What the eval showed (final run)</h3>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Case</th><th>With skill</th><th>Plain Claude</th></tr></thead>
+        <tbody>
+          <tr><td>Credits only evidenced items as covered</td><td class="num">1.00</td><td class="num">1.00</td></tr>
+          <tr><td>Refuses to certify "it's safe" with no evidence</td><td class="num">1.00</td><td class="num">1.00</td></tr>
+          <tr><td>Separates a reasoned decline from a gap, gives two numbers</td><td class="num">1.00</td><td class="num">0.44</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>On two of the three cases plain Claude already did as well. What the skill adds is telling a reasoned decline apart from an unexplained gap, and giving two coverage numbers. Plain Claude never gave two. It took four runs to measure cleanly, and every fix was to my test cases, not the skill.</p>
+    <div class="callout">There's no published sample review for this skill yet. The numbers above come from its eval suite and from the review of my own tools.</div>
+  </section>
+
+  <section id="tested">
+    <h2>Tested, including a failure</h2>
+    <p class="sub">Each skill has an eval suite with launch gates committed before the first run. Each case runs 3 times with the plugin and 3 times without, so the results show what the skills add.</p>
+
+    <div class="card">
+      <p style="margin-top:0"><span class="tag fail">Run 1 failed</span></p>
+      <p>With no evidence available, <code>/build-or-not</code> still gave a firm "don't build" from market knowledge it recalled. The skill never said what to do when there's no sample, so the model filled the gap.</p>
+      <p style="margin-bottom:0"><span class="tag pass">Fix</span> "Can't decide yet" is now its own outcome, naming the sample that would settle the question. The grader and gates didn't change. Run 2 passed every gate.</p>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Behavior</th><th>With the skills</th><th>Plain Claude</th></tr></thead>
+        <tbody>
+          <tr><td>States the bar before deciding</td><td class="num">3 of 3 runs</td><td class="num">0 of 3</td></tr>
+          <tr><td>Refuses a verdict when there's no evidence</td><td class="num">3 of 3</td><td class="num">0 of 3</td></tr>
+          <tr><td>Plans a rollback trigger for launch</td><td class="num">3 of 3</td><td class="num">1 of 3</td></tr>
+          <tr><td>Separates a reasoned decline from an unexplained gap</td><td class="num">3 of 3</td><td class="num">2 of 3</td></tr>
+          <tr><td>Gives two coverage numbers</td><td class="num">3 of 3</td><td class="num">0 of 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Where they don't help:</strong> plain Claude already spots hits a feature can't reach, and already pushes back on a bar set after the results. <strong>Limits:</strong> 8 cases, 3 runs each, one model under test. That's a smoke test of the key behaviors, not a benchmark.</p>
+    <p class="src"><a href="https://github.com/vishalhabib99/ai-pm-skills/blob/main/evals/README.md#results">All eval results, run by run →</a></p>
+  </section>
+
+  <section id="install">
+    <h2>Install</h2>
+    <p class="sub">In Claude Code:</p>
+<pre>/plugin marketplace add vishalhabib99/ai-pm-skills
+/plugin install ai-pm-skills@ai-pm-skills</pre>
+    <p class="sub">Then:</p>
+<pre>/ai-pm-skills:build-or-not &lt;the feature someone just proposed&gt;
+/ai-pm-skills:eval-plan &lt;path to a PRD, or a description of the AI feature&gt;
+/ai-pm-skills:agent-trust-review &lt;agent description, PRD, or repo path&gt;</pre>
+    <p>If you try one on a real decision, I'd like to hear where it was wrong. <a href="https://github.com/vishalhabib99/ai-pm-skills/issues">Open an issue</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Built by <a href="https://github.com/vishalhabib99">Vishal Habib</a>. MIT licensed. Source: <a href="https://github.com/vishalhabib99/ai-pm-skills">vishalhabib99/ai-pm-skills</a>.
+  </div>
+</footer>
+</body>
+</html>
