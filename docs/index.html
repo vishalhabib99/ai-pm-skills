@@ -211,13 +211,32 @@ footer{border-top:1px solid var(--border);margin-top:56px;padding:24px 0 40px;co
   </section>
 
   <section id="agent-trust-review">
-    <h2><code>/agent-trust-review</code>: three honest lists</h2>
+    <h2><code>/agent-trust-review</code>: it said not safe to ship</h2>
     <p class="sub">Most agent risk reviews list what the team did, which makes coverage look complete. This one sorts all 17 risk areas into three lists and ends with two coverage numbers.</p>
     <ul class="tight">
       <li><strong>Covered</strong>: only with evidence someone can check. "We log everything" with nothing to point at is claimed, not verified.</li>
       <li><strong>Declined on purpose</strong>: only with a reason and a trigger to reopen it.</li>
       <li><strong>Genuinely missing</strong>: ranked by severity, with the smallest next step for the top three.</li>
     </ul>
+
+    <div class="prompt"><b>Input</b>The <a href="https://github.com/vishalhabib99/ai-pm-portfolio/tree/main/prototypes/ticket-triage-rag">ticket-triage practice prototype</a> and its PRD: an assistant that classifies support tickets and drafts replies for a human to send.</div>
+
+    <div class="card">
+      <dl class="record">
+        <dt>Worst failure</dt><dd>A confidently wrong classification produces a plausible draft on the wrong topic, and a rushed agent sends it.</dd>
+        <dt>What it found</dt><dd>It ran the prototype's own eval. The "route to a human when unsure" check exists (<code>rag.py:99</code>) but doesn't fire: both off-topic tickets scored above the 0.08 threshold (0.182 and 0.112) and got confidently wrong drafts.</dd>
+      </dl>
+      <div class="stats">
+        <div class="stat"><div class="n">3</div><div class="l">covered, with evidence</div></div>
+        <div class="stat"><div class="n">3</div><div class="l">declined on purpose (e.g. no auto-send in v1)</div></div>
+        <div class="stat"><div class="n">9</div><div class="l">genuinely missing, top one: the threshold doesn't abstain</div></div>
+      </div>
+      <div class="decision"><span class="big">Not safe to ship</span><p>"No auto-send" is a real safeguard: it keeps today's failure "annoying, not dangerous." It doesn't make the classifier ready.</p></div>
+      <dl class="record">
+        <dt>Where it's wrong</dt><dd>The full-map coverage number has an arithmetic slip (3/17 should be 3/15), and it credits the escalation check as covered even though its own top gap shows the check fails.</dd>
+      </dl>
+    </div>
+    <p class="src"><a href="https://github.com/vishalhabib99/ai-pm-skills/blob/main/examples/agent-trust-review-ticket-triage.md">Full review, with what I checked by hand →</a></p>
 
     <h3>The review it's based on: my own MCP tools</h3>
     <div class="stats">
@@ -239,7 +258,6 @@ footer{border-top:1px solid var(--border);margin-top:56px;padding:24px 0 40px;co
       </table>
     </div>
     <p>On two of the three cases plain Claude already did as well. What the skill adds is telling a reasoned decline apart from an unexplained gap, and giving two coverage numbers. Plain Claude never gave two. It took four runs to measure cleanly, and every fix was to my test cases, not the skill.</p>
-    <div class="callout">There's no published sample review for this skill yet. The numbers above come from its eval suite and from the review of my own tools.</div>
   </section>
 
   <section id="tested">

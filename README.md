@@ -106,6 +106,10 @@ Most agent risk reviews list what the team did, which makes coverage look comple
 
 It ends with two coverage numbers, against what the team chose to own and against the full map, because one number alone misleads. It's based on the [review of my own MCP tools](https://github.com/vishalhabib99/mcp-doctor): 12 areas covered, 9 declined on purpose (each with a reason), 2 genuinely missing, which works out to roughly 80–85% of the chosen niche and 25–30% of AI agent testing overall.
 
+### Example run
+
+Run against the [ticket-triage practice prototype](https://github.com/vishalhabib99/ai-pm-portfolio/tree/main/prototypes/ticket-triage-rag) and its PRD. The skill ran the prototype's own eval and found that the low-confidence "route to a human" check doesn't catch off-topic tickets: both scored above the 0.08 threshold (0.182 and 0.112) and got confidently wrong drafts. Result: 3 covered, 3 declined on purpose, 9 genuinely missing, and a plain "not safe to ship". It isn't flawless: the coverage line has an arithmetic slip, and it counts that escalation check as covered even though its own top gap shows the check fails. Full output, with what I checked by hand, in [`examples/`](examples/agent-trust-review-ticket-triage.md).
+
 ## Tested, including a failure
 
 All three skills have an [eval suite](evals/) with launch gates committed before the first run, and each is run with and without the plugin to show what it adds. The first run **failed**: with no evidence available, `/build-or-not` still gave a firm verdict from recalled market knowledge. The skill was fixed to make "can't decide yet" its own outcome, and the second run passed every gate.
